@@ -36,7 +36,7 @@ if File.exists?(File.expand_path('../application.yml', __FILE__))
   end
 end
 TEMPLATE
-run "echo '#{application_setup}' >> config/application.rb"
+run "echo #{application_setup} >> config/application.rb"
 
 gem_group :development, :test do
   gem "rspec-rails"
@@ -152,6 +152,9 @@ create_file "app/helpers/time_helper.rb", time_helper
 
 get "http://timeago.yarp.com/jquery.timeago.js", "vendor/assets/javascripts/jquery.timeago.js"
 
+# Assets setup
+run "echo '//= require jquery.timeago' >> app/assets/javascripts/application.js"
+
 init = <<-TEMPLATE
 window.App ||= {}
 TEMPLATE
@@ -166,6 +169,17 @@ TEMPLATE
 create_file "app/assets/javascripts/app.timeago.js.coffee", app_timeago
 run "echo '//= require app.timeago' >> app/assets/javascripts/application.js"
 
+application_css =<<-TEMPLATE
+/*
+ *= require_self
+ */
+
+@import "twitter/bootstrap";
+@import "font-awesome";
+TEMPLATE
+
+run "rm app/assets/stylesheets/application.css"
+create_file "app/assets/stylesheets/application.css.scss", application_css
 
 git :init
 run "echo 'config/application.yml' >> .gitignore"
