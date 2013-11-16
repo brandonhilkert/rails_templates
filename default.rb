@@ -155,5 +155,7 @@ run "bundle binstubs rake"
 run "bundle install"
 
 git :init
+run "echo 'config/application.yml' >> .gitignore"
+
 git add: "."
 git commit: "-a -m 'Initial commit'"
