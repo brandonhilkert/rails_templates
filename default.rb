@@ -40,7 +40,7 @@ if File.exists?(File.expand_path('../application.yml', __FILE__))
   end
 end
 TEMPLATE
-create_file "config/application.yml", application_setup
+run "echo #{application_setup} >> config/application.rb"
 
 gem_group :development, :test do
   gem "rspec-rails"
