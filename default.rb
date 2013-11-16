@@ -150,6 +150,23 @@ end
 TEMPLATE
 create_file "app/helpers/time_helper.rb", time_helper
 
+get "http://timeago.yarp.com/jquery.timeago.js", "vendor/assets/javascripts/jquery.timeago.js"
+
+init = <<-TEMPLATE
+window.App ||= {}
+TEMPLATE
+create_file "app/assets/javascripts/init.js.coffee", init
+run "echo '//= require init' >> app/assets/javascripts/application.js"
+
+app_timeago = <<-TEMPLATE
+App.TimeAgo =
+  replaceTimes: ->
+    $("time.timeago").timeago()
+TEMPLATE
+create_file "app/assets/javascripts/app.timeago.js.coffee", app_timeago
+run "echo '//= require app.timeago' >> app/assets/javascripts/application.js"
+
+
 git :init
 run "echo 'config/application.yml' >> .gitignore"
 
