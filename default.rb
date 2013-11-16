@@ -71,6 +71,10 @@ gem "anjlab-bootstrap-rails", :require => "bootstrap-rails",
 gem "font-awesome-rails"
 gem "unicorn"
 
+run "bundle install"
+run "bundle binstubs rspec-core"
+run "bundle binstubs rake"
+
 # Setup unicorn for Heroku
 unicorn_config = <<-TEMPLATE
 worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
@@ -149,10 +153,6 @@ module TimeHelper
 end
 TEMPLATE
 create_file "helpers/time_helper.rb", time_helper
-
-run "bundle binstubs rspec-core"
-run "bundle binstubs rake"
-run "bundle install"
 
 git :init
 run "echo 'config/application.yml' >> .gitignore"
