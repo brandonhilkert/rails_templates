@@ -28,8 +28,8 @@ TEMPLATE
 create_file "config/application.yml", application_settings
 
 application_setup = <<-TEMPLATE
-if File.exists?(File.expand_path('../application.yml', __FILE__))
-  config = YAML.load(File.read(File.expand_path('../application.yml', __FILE__)))
+if File.exists?(File.expand_path(\'../application.yml\', __FILE__))
+  config = YAML.load(File.read(File.expand_path(\'../application.yml\', __FILE__)))
   config.merge! config.fetch(Rails.env, {})
   config.each do |key, value|
     ENV[key] ||= value.to_s unless value.kind_of? Hash
@@ -69,7 +69,6 @@ gem "unicorn"
 
 run "bundle install"
 run "bundle binstubs rspec-core"
-run "bundle binstubs rake"
 
 # Setup unicorn for Heroku
 unicorn_config = <<-TEMPLATE
@@ -105,7 +104,6 @@ create_file "Procfile", procfile
 
 # Setup rspec
 generate "rspec:install"
-run "mkdir spec/support"
 
 capybara = <<-TEMPLATE
 require 'capybara/rails'
