@@ -1,21 +1,17 @@
-# Remove concerns folders
-run "rm app/controllers/concerns"
-run "rm app/models/concerns"
-
 # Setup root landing page
 generate(:controller, "landing index")
 route "root to: 'landing#index'"
 
 # Application settings
-environment 'config.time_zone = "Eastern Time (US & Canada)"'
 environment '
-config.generators do |g|
-  g.test_framework :rspec, fixture: false
-  g.helper = false
-  g.assets = false
-  g.view_specs = false
-end
+    config.generators do |g|
+      g.test_framework :rspec, fixture: false
+      g.helper = false
+      g.assets = false
+      g.view_specs = false
+    end
 '
+environment 'config.time_zone = "Eastern Time (US & Canada)"'
 environment 'config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"', env: "production"
 environment 'config.static_cache_control = "public, max-age=31449600" # 1 year', env: "production"
 
@@ -40,7 +36,7 @@ if File.exists?(File.expand_path('../application.yml', __FILE__))
   end
 end
 TEMPLATE
-run "echo #{application_setup} >> config/application.rb"
+run "echo '#{application_setup}' >> config/application.rb"
 
 gem_group :development, :test do
   gem "rspec-rails"
@@ -100,7 +96,7 @@ after_fork do |server, worker|
     ActiveRecord::Base.establish_connection
 end
 TEMPLATE
-create_file "config/unicorn", unicorn_config
+create_file "config/unicorn.rb", unicorn_config
 
 procfile = <<-TEMPLATE
 web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
@@ -152,7 +148,7 @@ module TimeHelper
   end
 end
 TEMPLATE
-create_file "helpers/time_helper.rb", time_helper
+create_file "app/helpers/time_helper.rb", time_helper
 
 git :init
 run "echo 'config/application.yml' >> .gitignore"
