@@ -233,6 +233,8 @@ if Rails.env.production?
     user == ENV["SIDEKIQ_USERNAME"] && password == ENV["SIDEKIQ_PASSWORD"]
   end
 end
+
+Sidekiq.logger = Rails.logger
 FILE
   end
 
