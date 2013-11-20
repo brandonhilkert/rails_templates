@@ -256,6 +256,11 @@ FILE
 FILE
   end
 
+  append_file "Procfile" do <<-FILE
+worker: bundle exec sidekiq
+FILE
+  end
+
   run "bundle install"
 end
 
