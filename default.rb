@@ -1,7 +1,3 @@
-# Setup root landing page
-generate(:controller, "landing index")
-route "root to: 'landing#index'"
-
 # Application settings
 environment '
     config.generators do |g|
