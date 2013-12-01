@@ -57,6 +57,7 @@ end
 gem_group :production do
   gem "pg"
   gem "rails_12factor"
+  gem "heroku-deflater"
 end
 
 gem "anjlab-bootstrap-rails", :require => "bootstrap-rails",
