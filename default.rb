@@ -110,34 +110,11 @@ end
 
 create_file "spec/support/helpers.rb", ""
 
-create_file "app/helpers/time_helper.rb" do <<-FILE
-module TimeHelper
-  def timeago(time, options = {})
-    options[:class] ||= "timeago"
-    content_tag(:time, time.to_s, options.merge(datetime: time.getutc.iso8601)) if time
-  end
-end
-FILE
-end
-
-get "http://timeago.yarp.com/jquery.timeago.js", "vendor/assets/javascripts/jquery.timeago.js"
-
-# Assets setup
-append_file "app/assets/javascripts/application.js", "//= require jquery.timeago"
-
 create_file "app/assets/javascripts/init.js.coffee" do <<-FILE
 window.App ||= {}
 FILE
 end
 append_file "app/assets/javascripts/application.js", "//= require init"
-
-create_file "app/assets/javascripts/app.timeago.js.coffee" do <<-FILE
-App.TimeAgo =
-  replaceTimes: ->
-    $("time.timeago").timeago()
-FILE
-end
-append_file "app/assets/javascripts/application.js", "//= require app.timeago"
 
 create_file "app/assets/stylesheets/application.css.scss" do <<-FILE
 /*
