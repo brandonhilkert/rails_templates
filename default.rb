@@ -45,7 +45,6 @@ end
 gem_group :development, :test do
   gem "rspec-rails"
   gem "pry"
-  gem "sqlite3"
   gem "better_errors"
   gem "binding_of_caller"
 end
@@ -64,7 +63,6 @@ gem_group :development do
 end
 
 gem_group :production do
-  gem "pg"
   gem "rails_12factor"
   gem "heroku-deflater"
 end
