@@ -96,6 +96,10 @@ end
 
 create_file "spec/support/database_cleaner.rb" do <<-FILE
 RSpec.configure do |config|
+  config.before(:each, js: true) do
+    DatabaseCleaner.strategy = :truncation
+  end
+
   config.before(:each) do
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.start
