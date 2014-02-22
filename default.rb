@@ -67,10 +67,9 @@ gem_group :production do
   gem "heroku-deflater"
 end
 
-gem "anjlab-bootstrap-rails", :require => "bootstrap-rails",
-                                :github => "anjlab/bootstrap-rails"
 gem "font-awesome-rails"
 gem "passenger"
+gem "bootstrap-sass"
 
 run "bundle install"
 run "bundle binstubs rspec-core"
@@ -134,12 +133,17 @@ FILE
 end
 append_file "app/assets/javascripts/application.js", "//= require init"
 
+inject_into_file "app/assets/javascripts/application.js", before: "//= require_tree ." do <<-FILE
+//= require bootstrap
+FILE
+end
+
 create_file "app/assets/stylesheets/application.css.scss" do <<-FILE
 /*
  *= require_self
  */
 
-@import "twitter/bootstrap";
+@import "bootstrap";
 @import "font-awesome";
 FILE
 end
