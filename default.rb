@@ -1,9 +1,7 @@
 # Application settings
 environment '
     config.generators do |g|
-      g.test_framework :rspec, fixture: false
       g.helper = false
-      g.assets = false
       g.view_specs = false
     end
 '
@@ -43,19 +41,14 @@ FILE
 end
 
 gem_group :development, :test do
-  gem "rspec-rails"
+  gem "minitest-rails"
   gem "pry"
-  gem "better_errors"
-  gem "binding_of_caller"
 end
 
 gem_group :test do
-  gem "factory_girl_rails"
-  gem "capybara"
+  gem "minitest-rails-capybara"
   gem "selenium-webdriver"
   gem "database_cleaner"
-  gem "shoulda-matchers"
-  gem "rspec-rails"
 end
 
 gem_group :development do
@@ -72,7 +65,6 @@ gem "passenger"
 gem "bootstrap-sass"
 
 run "bundle install"
-run "bundle binstubs rspec-core"
 
 
 create_file "Procfile" do <<-FILE
@@ -80,52 +72,7 @@ web: bundle exec passenger start -p $PORT --max-pool-size 3
 FILE
 end
 
-# Setup rspec
-generate "rspec:install"
-
-create_file "spec/support/capybara.rb" do <<-FILE
-require 'capybara/rails'
-require 'capybara/rspec'
-
-RSpec.configure do |config|
-  Capybara.javascript_driver = :selenium
-end
-FILE
-end
-
-create_file "spec/support/database_cleaner.rb" do <<-FILE
-RSpec.configure do |config|
-  config.before(:suite) do
-    DatabaseCleaner.clean_with(:truncation)
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.strategy = :transaction
-  end
-
-  config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation
-  end
-
-  config.before(:each) do
-    DatabaseCleaner.start
-  end
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
-end
-FILE
-end
-
-create_file "spec/support/factory_girl.rb" do <<-FILE
-RSpec.configure do |config|
-  config.include FactoryGirl::Syntax::Methods
-end
-FILE
-end
-
-create_file "spec/support/helpers.rb", ""
+generate "mini_test:install"
 
 create_file "app/assets/javascripts/init.js.coffee" do <<-FILE
 window.App ||= {}
@@ -165,8 +112,11 @@ ActionMailer::Base.smtp_settings = {
   :enable_starttls_auto => true
 }
 
+# ActionMailer::Base.asset_host = "http://domain.com" if Rails.env.production?
+
 ActionMailer::Base.default_url_options = {
-  host: ENV["EMAIL_DOMAIN"]
+  host: ENV["EMAIL_DOMAIN"],
+  only_path: false
 }
 
 if Rails.env.development?
