@@ -8,7 +8,7 @@ Rspec
 rails new <app> --skip-bundle --skip-test-unit  --database postgresql -m https://raw.github.com/brandonhilkert/rails_templates/master/default.rb
 ```
 
-MiniTest
+Minitest
 
 ```
 rails new <app> --skip-bundle --database postgresql -m https://raw.github.com/brandonhilkert/rails_templates/minitest/default.rb

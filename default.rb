@@ -5,7 +5,7 @@ environment '
       g.view_specs = false
     end
 '
-environment 'config.time_zone = "Eastern Time (US & Canada)"'
+environment 'config.time_zone = "UTC"'
 environment 'config.action_dispatch.x_sendfile_header = "X-Accel-Redirect"', env: "production"
 environment 'config.static_cache_control = "public, max-age=31449600" # 1 year', env: "production"
 
@@ -41,14 +41,12 @@ FILE
 end
 
 gem_group :development, :test do
-  gem "minitest-rails"
   gem "pry"
 end
 
 gem_group :test do
-  gem "minitest-rails-capybara"
   gem "selenium-webdriver"
-  gem "database_cleaner"
+  gem "capybara"
 end
 
 gem_group :development do
@@ -63,6 +61,8 @@ end
 gem "font-awesome-rails"
 gem "passenger"
 gem "bootstrap-sass"
+gem "so_meta"
+gem "local_time"
 
 run "bundle install"
 
@@ -71,8 +71,6 @@ create_file "Procfile" do <<-FILE
 web: bundle exec passenger start -p $PORT --max-pool-size 3
 FILE
 end
-
-generate "mini_test:install"
 
 create_file "app/assets/javascripts/init.js.coffee" do <<-FILE
 window.App ||= {}
