@@ -65,7 +65,7 @@ gem "so_meta"
 gem "local_time"
 
 run "bundle install"
-
+run "bundle exec spring binstub --all"
 
 create_file "Procfile" do <<-FILE
 web: bundle exec passenger start -p $PORT --max-pool-size 3
