@@ -156,12 +156,13 @@ Sidekiq.logger = Rails.logger
 FILE
   end
 
-  create_file "app/workers/sample_worker.rb" do <<-FILE
-class SampleWorker
+  create_file "app/workers/email_worker.rb" do <<-FILE
+
+class EmailWorker
   include Sidekiq::Worker
 
-  def perform
-
+  def perform(klass, name, *args)
+    klass.constantize.send(name.to_sym, *args).deliver
   end
 end
 FILE
