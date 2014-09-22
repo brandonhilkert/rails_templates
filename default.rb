@@ -58,16 +58,43 @@ gem_group :production do
   gem "heroku-deflater"
 end
 
+gem "unicorn"
 gem "font-awesome-rails"
-gem "passenger"
 gem "bootstrap-sass"
 gem "so_meta"
 gem "local_time"
 
 run "bundle install"
 
+# Setup unicorn for Heroku
+create_file "config/unicorn.rb" do <<-FILE
+worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
+timeout 15
+preload_app true
+
+before_fork do |server, worker|
+  Signal.trap 'TERM' do
+    puts 'Unicorn master intercepting TERM and sending myself QUIT instead'
+    Process.kill 'QUIT', Process.pid
+  end
+
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.connection.disconnect!
+end
+
+after_fork do |server, worker|
+  Signal.trap 'TERM' do
+    puts 'Unicorn worker intercepting TERM and doing nothing. Wait for master to send QUIT'
+  end
+
+  defined?(ActiveRecord::Base) and
+    ActiveRecord::Base.establish_connection
+end
+FILE
+end
+
 create_file "Procfile" do <<-FILE
-web: bundle exec passenger start -p $PORT --max-pool-size 3
+web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 FILE
 end
 
