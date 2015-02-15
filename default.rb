@@ -213,3 +213,4 @@ append_file ".gitignore", "config/application.yml"
 
 git add: "."
 git commit: "-a -m 'Initial commit'"
+run "bundle exec spring binstub --all"
