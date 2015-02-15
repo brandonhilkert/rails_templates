@@ -35,7 +35,7 @@ end
 
 inject_into_file "Gemfile", after: "source 'https://rubygems.org'" do <<-FILE
 
-ruby "2.2"
+ruby "2.2.0"
 FILE
 end
 
