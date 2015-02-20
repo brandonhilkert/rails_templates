@@ -33,15 +33,7 @@ end
 FILE
 end
 
-inject_into_file "Gemfile", after: "source 'https://rubygems.org'" do <<-FILE
-
-ruby "2.2.0"
-FILE
-end
-
-gem_group :development, :test do
-  gem "pry"
-end
+inject_into_file "Gemfile", "\n\nruby '2.2.0'", after: "source 'https://rubygems.org'"
 
 gem_group :test do
   gem "selenium-webdriver"
@@ -97,18 +89,15 @@ web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
 FILE
 end
 
-create_file "app/assets/javascripts/init.js.coffee" do <<-FILE
+create_file "app/assets/javascripts/init.coffee" do <<-FILE
 window.App ||= {}
 FILE
 end
 append_file "app/assets/javascripts/application.js", "//= require init"
 
-inject_into_file "app/assets/javascripts/application.js", before: "//= require_tree ." do <<-FILE
-//= require bootstrap
-FILE
-end
+inject_into_file "app/assets/javascripts/application.js", "//= require bootstrap\n", before: "//= require_tree ."
 
-create_file "app/assets/stylesheets/application.css.scss" do <<-FILE
+create_file "app/assets/stylesheets/application.scss" do <<-FILE
 /*
  *= require_self
  */
@@ -119,6 +108,8 @@ FILE
 end
 
 remove_file "app/assets/stylesheets/application.css"
+
+gsub_file "app/views/layouts/application.html.erb", '<body>', '<body class="<%= controller_path.gsub(/\//, "-") %> <%= action_name %>">'
 
 # Optional things
 #
