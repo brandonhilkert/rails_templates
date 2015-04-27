@@ -102,6 +102,7 @@ create_file "app/assets/stylesheets/application.scss" do <<-FILE
  *= require_self
  */
 
+@import "bootstrap-sprockets";
 @import "bootstrap";
 @import "font-awesome";
 FILE
