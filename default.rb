@@ -49,7 +49,7 @@ gem_group :production do
   gem "heroku-deflater"
 end
 
-gem "unicorn"
+gem "puma"
 gem "font-awesome-rails"
 gem "bootstrap-sass"
 gem "so_meta"
@@ -57,42 +57,44 @@ gem "local_time"
 
 run "bundle install"
 
-# Setup unicorn for Heroku
-create_file "config/unicorn.rb" do <<-FILE
-worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
-timeout 15
-preload_app true
+# Setup puma for Heroku
+create_file "config/puma.rb" do <<-FILE
+workers Integer(ENV['PUMA_WEB_CONCURRENCY'] || 2)
+threads_count = Integer(ENV['PUMA_MAX_THREADS'] || 5)
+threads threads_count, threads_count
 
-before_fork do |server, worker|
-  Signal.trap 'TERM' do
-    puts 'Unicorn master intercepting TERM and sending myself QUIT instead'
-    Process.kill 'QUIT', Process.pid
-  end
+preload_app!
 
-  defined?(ActiveRecord::Base) and
-    ActiveRecord::Base.connection.disconnect!
-end
+port        ENV['PORT']     || 3000
+environment ENV['RACK_ENV'] || 'development'
 
-after_fork do |server, worker|
-  Signal.trap 'TERM' do
-    puts 'Unicorn worker intercepting TERM and doing nothing. Wait for master to send QUIT'
-  end
-
-  defined?(ActiveRecord::Base) and
+on_worker_boot do
+  ActiveSupport.on_load(:active_record) do
     ActiveRecord::Base.establish_connection
+  end
 end
 FILE
 end
 
+run "bundle binstubs puma"
+
 create_file "Procfile" do <<-FILE
-web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+web: bin/puma -c ./config/puma.rb
 FILE
 end
 
 create_file "app/assets/javascripts/init.coffee" do <<-FILE
 window.App ||= {}
+
+App.init = ->
+
+$(document).on "page:change", ->
+  App.init()
+
 FILE
 end
+
+gsub_file "app/assets/javascripts/application.js", '//= require_tree .', ''
 append_file "app/assets/javascripts/application.js", "//= require init"
 
 inject_into_file "app/assets/javascripts/application.js", "//= require bootstrap\n", before: "//= require_tree ."
@@ -193,11 +195,12 @@ FILE
   end
 
   append_file "Procfile" do <<-FILE
-worker: bundle exec sidekiq
+worker: bin/sidekiq
 FILE
   end
 
   run "bundle install"
+  run "bundle binstubs sidekiq"
 end
 
 git :init
