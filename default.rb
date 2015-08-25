@@ -204,7 +204,7 @@ FILE
   run "bundle install"
   run "bundle binstubs sidekiq"
 
-  inject_into_file "config/routes.rb", "mount Sidekiq::Web => '/sidekiq'", before: "Rails.application.routes.draw do"
+  inject_into_file "config/routes.rb", "mount Sidekiq::Web => '/sidekiq'", before: "end"
 end
 
 git :init
