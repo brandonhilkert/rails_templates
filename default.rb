@@ -161,10 +161,12 @@ end
 
 # Sidekiq
 if yes?("Sidekiq?")
-  gem 'sidekiq', require: "sidekiq/web"
+  gem 'sidekiq'
   gem 'sinatra'
 
   create_file "config/initializers/sidekiq.rb" do <<-FILE
+require 'sidekiq/web'
+
 if Rails.env.production?
   Sidekiq::Web.use(Rack::Auth::Basic) do |user, password|
     user == ENV["SIDEKIQ_USERNAME"] && password == ENV["SIDEKIQ_PASSWORD"]
@@ -201,6 +203,8 @@ FILE
 
   run "bundle install"
   run "bundle binstubs sidekiq"
+
+  inject_into_file "config/routes.rb", "mount Sidekiq::Web => '/sidekiq'", before: "Rails.application.routes.draw do"
 end
 
 git :init
