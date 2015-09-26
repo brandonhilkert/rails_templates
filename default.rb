@@ -33,6 +33,11 @@ end
 FILE
 end
 
+create_file "config/spring.rb" do <<-FILE
+Spring.watch "config/application.yml"
+FILE
+end
+
 inject_into_file "Gemfile", "\n\nruby '2.2.0'", after: "source 'https://rubygems.org'"
 
 gem_group :test do
@@ -212,4 +217,5 @@ append_file ".gitignore", "config/application.yml"
 
 git add: "."
 git commit: "-a -m 'Initial commit'"
+
 run "bundle exec spring binstub --all"
