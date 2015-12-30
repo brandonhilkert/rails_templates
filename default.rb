@@ -84,7 +84,7 @@ end
 run "bundle binstubs puma"
 
 create_file "Procfile" do <<-FILE
-web: bin/puma -c ./config/puma.rb
+web: bin/puma -C ./config/puma.rb
 FILE
 end
 
