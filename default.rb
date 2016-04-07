@@ -38,7 +38,7 @@ Spring.watch "config/application.yml"
 FILE
 end
 
-inject_into_file "Gemfile", "\n\nruby '2.2.0'", after: "source 'https://rubygems.org'"
+inject_into_file "Gemfile", "\n\nruby '2.3.0'", after: "source 'https://rubygems.org'"
 
 gem_group :test do
   gem "selenium-webdriver"
@@ -49,9 +49,11 @@ gem_group :development do
   gem "quiet_assets"
 end
 
-gem_group :production do
-  gem "rails_12factor"
-  gem "heroku-deflater"
+if yes?("Hosted on Heroku?")
+  gem_group :production do
+    gem "rails_12factor"
+    gem "heroku-deflater"
+  end
 end
 
 gem "puma"
@@ -62,7 +64,7 @@ gem "local_time"
 
 run "bundle install"
 
-# Setup puma for Heroku
+# Setup puma
 create_file "config/puma.rb" do <<-FILE
 workers Integer(ENV['PUMA_WEB_CONCURRENCY'] || 2)
 threads_count = Integer(ENV['PUMA_MAX_THREADS'] || 5)
